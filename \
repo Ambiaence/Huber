@@ -1,0 +1,15 @@
+from tkinter import *
+import test.py
+
+root  = Tk()
+
+myBut = Button(root, text="Click me!", command = play())
+myBut.pack()
+
+eggs input()
+stream.stop_stream()
+stream.close()
+
+#App loop
+root.mainloop()
+
