@@ -8,22 +8,17 @@ class AudioWorkspace:
 		self.globalButtonsFrame = tk.Frame(config.root, bg= "#B3CBC9", height = 75, width = 1920)
 		self.globalButtonsFrame.grid(column=0, row=2, sticky = 'e')
 		self.pack
-		self.action = "place"
+		self.action = "add"
+		self.markerKind = "switch"
 		self.windows = []
 		self.markers = []
 		self.highestWindowIndex = 0;
 		self.windows.append(Window(self))
 
-		self.new = tk.Button(self.globalButtonsFrame, text = "Add", command = lambda: self.addWindow())
-		self.new.pack()
-
-		self.old = tk.Button(self.globalButtonsFrame, text = "Kill", command = lambda: self.killWindow())
-		self.old.pack()
-
-		self.actionText = tk.StringVar()
-		self.actionButton = tk.Button(self.globalButtonsFrame, textvariable = self.actionText, command = lambda: self.actionButtonFunc())
-		self.actionText.set("Place")
-		self.actionButton.pack()
+		new = tk.Button(self.globalButtonsFrame, text = "Add", command = lambda: self.addWindow())
+		new.pack()
+		old = tk.Button(self.globalButtonsFrame, text = "Kill", command = lambda: self.killWindow())
+		old.pack()
 	
 	def pack(self):
 		self.audioWindowsFrame.pack()
@@ -31,16 +26,6 @@ class AudioWorkspace:
 
 	def redraw(self):
 		print("redraw")
-
-	def actionButtonFunc(self):
-		if(self.action == "place"):
-			print("place")
-			self.action = "remove"
-			self.actionText.set("Remove")
-		elif(self.action == "remove"):
-			print("remove")
-			self.action = "place"
-			self.actionText.set("Place")
 	
 	def addWindow(self):
 		if self.highestWindowIndex < 3:
@@ -78,6 +63,7 @@ class Window:
 		self.visual.canvas.bind('<ButtonRelease-1>', self.releaseMouseLeft)
 		self.open = 0.0
 		self.closeMarker = 1.0
+		self.render()
 
 	def fractionToFrame(self, time = 1): #takes a point in time of a song as the fraction of the whole song and returns closest frame to that ideal pint.
 		return int(config.sungio.totalFrames*time)
@@ -87,8 +73,10 @@ class Window:
 		if self.state == "Add-Close": 
 			self.closeMarker = event.x/config.audioCanvasWidth
 			print(self.closeMarker)
-		elif self.state == "Add":		
+			self.render()	
+		else if self.state == "Add":		
 			sungio.keypoints.append(Marker(self.open + (event.x/config.audioCanvasWidth) * (self.closeMarker - self.open)))
+			self.render()
 
 	def releaseMouseLeft(self, event):
 		print(event.x, event.y, "R:order:", self.order)

@@ -18,6 +18,3 @@ class NavigationFrame:
 
 	def redraw(self):
 		print("redraw")
-
-	
-		

@@ -44,9 +44,6 @@ def audioPhase(): #All frames are in column  except back and next buttons
 #	ff = ffmpy.FFmpeg(inputs={filename: ["-y"]}, outputs={'sungioTemp.wav': ["-y"]})
 #	ff.run();
 
-
-print(config.root)
-
 config.root = tk.Tk()
 config.root.title("Sungio")
 config.root.configure(bg="#6A66A3")
