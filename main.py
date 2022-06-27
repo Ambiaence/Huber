@@ -32,12 +32,12 @@ def openFile():
 	audioPhase()
 
 def audioPhase(): #All frames are in column  except back and next buttons
-	config.sungio.navigationFrame = NavigationFrame()
-	audioOverview = AudioOverview()
-	audioWorkpsace = AudioWorkspace()
+	navigationFrame = NavigationFrame(config.root)
+	audioOverview = AudioOverview(config.root)
+	audioWorkpspace = AudioWorkspace(root = config.root, sungio = config.sungio)
 
 config.root = tk.Tk()
-config.root.title("Sungio")
+config.root.title("Huber")
 config.root.configure(bg="#6A66A3")
 
 startMenuFrame = Frame(config.root, bg = "#84A9c0");
