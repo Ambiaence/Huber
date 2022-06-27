@@ -84,11 +84,9 @@ class Window:
 
 	def pressMouseLeft(self, event):
 		print(event.x, event.y, "P:order:", self.order)
-		if self.state == "Add-Close": 
-			self.closeMarker = event.x/config.audioCanvasWidth
-			print(self.closeMarker)
-		elif self.state == "Add":		
-			sungio.keypoints.append(Marker(self.open + (event.x/config.audioCanvasWidth) * (self.closeMarker - self.open)))
+		if config.sungio.action == "place":		
+			sungio.keypoints.append(Marker(self.open + (event.x/config.audioCanvasWidth) * (self.closeMarker - self.open), "switch"))
+			print("Marker placed at ", sungio.keypoints[-1])
 
 	def releaseMouseLeft(self, event):
 		print(event.x, event.y, "R:order:", self.order)

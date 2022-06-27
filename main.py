@@ -10,14 +10,11 @@ import os
 
 
 
-# My stuff
 import config #This is the standard way to share globals
 from sungio import Sungio
 from audio_overview import AudioOverview
 from audio_workspace import AudioWorkspace
 from navigation_frame import NavigationFrame
-
-# defining open_file_chooser function
 
 def openFile():
 	filename = askopenfilename()
@@ -35,14 +32,9 @@ def openFile():
 	audioPhase()
 
 def audioPhase(): #All frames are in column  except back and next buttons
-	navigationFrame = NavigationFrame()
+	config.sungio.navigationFrame = NavigationFrame()
 	audioOverview = AudioOverview()
 	audioWorkpsace = AudioWorkspace()
-#def restoreSungio(): # Too be continued
-#	filename = askopenfilename()
-#	print("You have selected : %s" % filename)
-#	ff = ffmpy.FFmpeg(inputs={filename: ["-y"]}, outputs={'sungioTemp.wav': ["-y"]})
-#	ff.run();
 
 config.root = tk.Tk()
 config.root.title("Sungio")
