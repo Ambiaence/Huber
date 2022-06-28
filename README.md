@@ -1,7 +1,7 @@
 # Intro
 This project is in an experimental phase as I learn TKinter and refine my use of Object Oriented Principles. The end goal is an application(or several) that syncs music and video clips in a satisfying way with the bare minimum amount of user input. 
 
-For reference think about the cutting style of [this video](https://https://www.youtube.com/watch?v=FrCDWX5JBCQ). Ignoring everything flashy, the technique for cutting could to follow 2 simples rules.
+For reference think about the cutting style of [this video](https://https://www.youtube.com/watch?v=FrCDWX5JBCQ). Ignoring everything flashy, the technique for cutting alone could follow 2 simples rules.
 
 <ol>
 	<li> Sync the most interesting part of a given clip with a particularly interesting climax of the song. </li>
