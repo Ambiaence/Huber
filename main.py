@@ -8,8 +8,6 @@ from tkinter.filedialog import askopenfilename
 import ffmpy
 import os
 
-
-
 import config #This is the standard way to share globals
 from sungio import Sungio
 from audio_overview import AudioOverview

@@ -55,17 +55,22 @@ class AudioWorkspace:
 	def render(self):
 		for mark in self.__sungio.keypoints: 
 			for window in self.windows:
-				if mark.pos > window.open and mark.pos < window.close:
+				if mark.pos > window.start and mark.pos < window.end:
 					if mark.meaning == "switch":
-						window.visual.drawMark(mark.pos, "#000000")
+						window.visual.drawMark((mark.pos - window.start)/(window.end - window.start) * config.audioCanvasWidth, "blue")
 				
 class Marker:
 	def __init__(self, pos, meaning, rank):
 		self.pos = pos 
 		self.meaning = meaning
+		self.rank = rank
+
+	def print(self):
+		print(self.pos)
+		print(self.meaning)
 		
 class Window:
-	def __init__(self, workspace, sungio, order=0, start = 0, end=0): 
+	def __init__(self, workspace, sungio, order=0, start = 0, end=1): 
 		self.__sungio = sungio
 		self.__workspace = workspace
 		self.start = start
@@ -76,7 +81,7 @@ class Window:
 		self.visual = Visual(self.frame)
 		self.visual.canvas.bind('<Button-1>', self.pressMouseLeft)
 		self.visual.canvas.bind('<ButtonRelease-1>', self.releaseMouseLeft)
-		self.open = 0.0
+		self.openMarker = 0.0
 		self.closeMarker = 1.0
 
 	def fractionToFrame(self, time = 1): #takes a point in time of a song as the fraction of the whole song and returns closest frame to that ideal pint.
@@ -84,9 +89,10 @@ class Window:
 
 	def pressMouseLeft(self, event):
 		print(event.x, event.y, "P:order:", self.order)
-		if self.__singio.action == "place":		
-			sungio.keypoints.append(Marker(self.open + (event.x/config.audioCanvasWidth) * (self.closeMarker - self.open), "switch"))
-			print("Marker placed at ", sungio.keypoints[-1])
+		if self.__workspace.action == "place":		
+			self.__sungio.keypoints.append(Marker(self.start + (event.x/config.audioCanvasWidth) * (self.end - self.start), "switch", rank = 1))
+			self.__sungio.keypoints[-1].print()
+			self.__workspace.render()
 
 	def releaseMouseLeft(self, event):
 		print(event.x, event.y, "R:order:", self.order)
@@ -94,10 +100,11 @@ class Window:
 class Visual:
 	def __init__(self, frame):
 		self.buttonFrame = tk.Frame(frame, height =213, bg = "#B3CBC9", width = 213)
+		self.frame = tk.Frame(frame, height =213, bg = "#B3CBC9", width = 213)
 		self.canvas = tk.Canvas(frame, height = config.audioCanvasHeight, bg = "#DDD8B8", width = config.audioCanvasWidth)
 		self.canvas.grid(row = 0, column = 1)
 		self.buttonFrame.grid(row = 0, column = 0)
 	
 	def drawMark(self, pos, color):
-		canvas.create_line(pos, 0, pos, config.audioCanvasHeight, fill = color)
-		canvas.create_rectangle(pos, 0, pos, config.audioCanvasHeight, fill = color)	
+		self.canvas.create_line(pos, 0, pos, config.audioCanvasHeight, fill = color)
+		self.canvas.create_rectangle(pos-10, config.audioCanvasHeight - 21, pos+10, config.audioCanvasHeight, fill = color)	
