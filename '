@@ -49,13 +49,7 @@ class AudioWorkspace:
 		if self.highestWindowIndex < 3:
 			self.windows.append(Window(workspace = self, order = self.highestWindowIndex+1, start = self.windows[self.highestWindowIndex].start, end = self.windows[self.highestWindowIndex].end, sungio = self.__sungio))
 			self.highestWindowIndex = self.highestWindowIndex + 1;
-
-			for keypoint in self.windows[self.highestWindowIndex-1].keypoints:
-				if keypoint.pos > self.windows[self.highestWindowIndex].start and keypoint.pos < self.windows[self.highestWindowIndex].end:
-					self.windows[self.highestWindowIndex].keypoints.append(keypoint)
-					print(self.highestWindowIndex, "Has a new keypoint")
-
-			self.render()
+			self.render() 
 	
 	def killWindow(self):
 		if self.highestWindowIndex != 0: # Always have at least one window open
@@ -76,7 +70,6 @@ class AudioWorkspace:
 		for window in self.windows:
 			if newestMark.pos > window.start and newestMark.pos < window.end:
 				window.keypoints.append(newestMark)
-				self.render()
 				print("Window #", window.order, "contains newest mark")
 				
 				
@@ -94,7 +87,7 @@ class Window:
 	def __init__(self, workspace, sungio, order=0, start = 0, end=1): 
 		self.__sungio = sungio
 		self.__workspace = workspace
-		self.keypoints = []
+		self.keypoints
 		self.start = start
 		self.end = end
 		self.order = order
