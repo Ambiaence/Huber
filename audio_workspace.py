@@ -64,6 +64,9 @@ class AudioWorkspace:
 			self.highestWindowIndex = self.highestWindowIndex - 1;
 
 	def render(self): #Draw everything
+		for window in self.windows:
+			window.visual.canvas.create_rectangle(0, 0, config.audioCanvasWidth, config.audioCanvasHeight, fill = config.audioCanvasColor)	
+
 		for mark in self.__sungio.keypoints: 
 			for window in self.windows:
 				window.visual.refresh();
@@ -92,6 +95,7 @@ class Marker:
 		
 class Window:
 	def __init__(self, workspace, sungio, order=0, start = 0, end=1): 
+		self.__movePoint = "empty"
 		self.__sungio = sungio
 		self.__workspace = workspace
 		self.keypoints = []
@@ -106,22 +110,39 @@ class Window:
 		self.containedMarks = []
 		self.openMarker = 0.0
 		self.closeMarker = 1.0
+	
+	def doesHandleContainMousePos(self, x, y, pos):
+		north = config.audioCanvasHeight - 21; # This is the box that is a keypoint
+		south = config.audioCanvasHeight;
+		east = (pos - self.start)/(self.end - self.start) * config.audioCanvasWidth + 10
+		west = (pos - self.start)/(self.end - self.start) * config.audioCanvasWidth - 10
+
+		if y > north and y < south and x > west and x < east:
+			return True
+		else:
+			return False
 
 	def fractionToFrame(self, time = 1): #takes a point in time of a song as the fraction of the whole song and returns closest frame to that ideal pint.
 		return int(self.__sungio.totalFrames*time)
 
 	def pressMouseLeft(self, event):
 		fPos = self.start + (event.x/config.audioCanvasWidth) * (self.end - self.start) # Floating point poisition
-
 		if self.__workspace.action == "place":		
 			self.__sungio.keypoints.append(Marker(fPos, "switch", rank = 1))
 			self.__workspace.newMarker()
-#		if self.__workspace.action == "move":
-#			containedMarkers = []
-#			for mark in __sungio.markers:
-#				if(mark.pos)
+		if self.__workspace.action == "move":		
+			for mark in self.keypoints:
+				if self.doesHandleContainMousePos(event.x, event.y, mark.pos):
+					print("Point ", mark.pos, "Clicked")
+					self.__movePoint = mark
+			
 	def releaseMouseLeft(self, event):
-		print(event.x, event.y, "R:order:", self.order)
+		fPos = self.start + (event.x/config.audioCanvasWidth) * (self.end - self.start) # Floating point poisition
+		print(self.__movePoint)
+		if self.__workspace.action == "move" and  self.__movePoint != "empty":
+			self.__movePoint.pos = fPos
+			self.__movePoint = "empty"
+			self.__workspace.render()
 		
 class Visual:
 	def __init__(self, frame):
