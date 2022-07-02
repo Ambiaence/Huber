@@ -47,7 +47,7 @@ class AudioWorkspace:
 	
 	def addWindow(self):
 		if self.highestWindowIndex < 3:
-			self.windows.append(Window(workspace = self, order = self.highestWindowIndex+1, start = self.windows[self.highestWindowIndex].start, end = self.windows[self.highestWindowIndex].end, sungio = self.sungio))
+			self.windows.append(Window(workspace = self, order = self.highestWindowIndex+1, start = self.windows[self.highestWindowIndex].openMarker.pos, end = self.windows[self.highestWindowIndex].closeMarker.pos, sungio = self.sungio))
 			self.highestWindowIndex = self.highestWindowIndex + 1;
 
 			for keypoint in self.windows[self.highestWindowIndex-1].keypoints:
@@ -73,6 +73,10 @@ class AudioWorkspace:
 				if mark.pos > window.start and mark.pos < window.end:
 					if mark.meaning == "switch":
 						window.visual.drawMark((mark.pos - window.start)/(window.end - window.start) * config.audioCanvasWidth, "blue")
+
+		for window in self.windows:
+				window.visual.drawMark((window.openMarker.pos - window.start)/(window.end - window.start) * config.audioCanvasWidth, "red")
+				window.visual.drawMark((window.closeMarker.pos - window.start)/(window.end - window.start) * config.audioCanvasWidth, "red")
 
 	def newMarker(self): #Makes sure that windows have an accurate record of the markers within
 		newestMark = self.sungio.keypoints[-1]
@@ -108,8 +112,8 @@ class Window:
 		self.visual.canvas.bind('<Button-1>', self.pressMouseLeft)
 		self.visual.canvas.bind('<ButtonRelease-1>', self.releaseMouseLeft)
 		self.containedMarks = []
-		self.openMarker = 0.0
-		self.closeMarker = 1.0
+		self.openMarker = Marker(start + (end - start)*.01, "open", "NA")
+		self.closeMarker = Marker(end - (end - start)*.01, "close", "NA")
 	
 	def doesHandleContainMousePos(self, x, y, pos):
 		north = config.audioCanvasHeight - 21; # This is the box that is a keypoint
@@ -135,7 +139,14 @@ class Window:
 				if self.doesHandleContainMousePos(event.x, event.y, mark.pos):
 					print("Point ", mark.pos, "Clicked")
 					self.movePoint = mark
-			
+
+			if self.doesHandleContainMousePos(event.x, event.y, self.openMarker.pos):
+					self.movePoint = self.openMarker
+
+			if self.doesHandleContainMousePos(event.x, event.y, self.closeMarker.pos):
+					self.movePoint = self.closeMarker
+				
+
 	def releaseMouseLeft(self, event):
 		fPos = self.start + (event.x/config.audioCanvasWidth) * (self.end - self.start) # Floating point poisition
 		print(self.movePoint)
