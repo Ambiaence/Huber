@@ -3,18 +3,18 @@ import tkinter as tk
 
 class AudioWorkspace:
 	def __init__(self, root, sungio):
-		self.__root = root
-		self.__sungio = sungio
-		self.audioWindowsFrame = tk.Frame(self.__root, bg= config.colorOne, height = 855, width = 1920)
+		self.root = root
+		self.sungio = sungio
+		self.audioWindowsFrame = tk.Frame(self.root, bg= config.colorOne, height = 855, width = 1920)
 		self.audioWindowsFrame.grid(column=0, row=1, sticky = 'e')
-		self.globalButtonsFrame = tk.Frame(self.__root, bg= "#B3CBC9", height = 75, width = 1920)
+		self.globalButtonsFrame = tk.Frame(self.root, bg= "#B3CBC9", height = 75, width = 1920)
 		self.globalButtonsFrame.grid(column=0, row=2, sticky = 'e')
 		self.pack
 		self.action = "place"
 		self.windows = []
 		self.markers = []
 		self.highestWindowIndex = 0;
-		self.windows.append(Window(sungio = self.__sungio, workspace = self))
+		self.windows.append(Window(sungio = self.sungio, workspace = self))
 		self.new = tk.Button(self.globalButtonsFrame, text = "Add", command = lambda: self.addWindow())
 		self.new.pack()
 		self.old = tk.Button(self.globalButtonsFrame, text = "Kill", command = lambda: self.killWindow())
@@ -47,7 +47,7 @@ class AudioWorkspace:
 	
 	def addWindow(self):
 		if self.highestWindowIndex < 3:
-			self.windows.append(Window(workspace = self, order = self.highestWindowIndex+1, start = self.windows[self.highestWindowIndex].start, end = self.windows[self.highestWindowIndex].end, sungio = self.__sungio))
+			self.windows.append(Window(workspace = self, order = self.highestWindowIndex+1, start = self.windows[self.highestWindowIndex].start, end = self.windows[self.highestWindowIndex].end, sungio = self.sungio))
 			self.highestWindowIndex = self.highestWindowIndex + 1;
 
 			for keypoint in self.windows[self.highestWindowIndex-1].keypoints:
@@ -67,7 +67,7 @@ class AudioWorkspace:
 		for window in self.windows:
 			window.visual.canvas.create_rectangle(0, 0, config.audioCanvasWidth, config.audioCanvasHeight, fill = config.audioCanvasColor)	
 
-		for mark in self.__sungio.keypoints: 
+		for mark in self.sungio.keypoints: 
 			for window in self.windows:
 				window.visual.refresh();
 				if mark.pos > window.start and mark.pos < window.end:
@@ -75,7 +75,7 @@ class AudioWorkspace:
 						window.visual.drawMark((mark.pos - window.start)/(window.end - window.start) * config.audioCanvasWidth, "blue")
 
 	def newMarker(self): #Makes sure that windows have an accurate record of the markers within
-		newestMark = self.__sungio.keypoints[-1]
+		newestMark = self.sungio.keypoints[-1]
 		for window in self.windows:
 			if newestMark.pos > window.start and newestMark.pos < window.end:
 				window.keypoints.append(newestMark)
@@ -96,7 +96,7 @@ class Marker:
 class Window:
 	def __init__(self, workspace, sungio, order=0, start = 0, end=1): 
 		self.__movePoint = "empty"
-		self.__sungio = sungio
+		self.sungio = sungio
 		self.__workspace = workspace
 		self.keypoints = []
 		self.start = start
@@ -123,12 +123,12 @@ class Window:
 			return False
 
 	def fractionToFrame(self, time = 1): #takes a point in time of a song as the fraction of the whole song and returns closest frame to that ideal pint.
-		return int(self.__sungio.totalFrames*time)
+		return int(self.sungio.totalFrames*time)
 
 	def pressMouseLeft(self, event):
 		fPos = self.start + (event.x/config.audioCanvasWidth) * (self.end - self.start) # Floating point poisition
 		if self.__workspace.action == "place":		
-			self.__sungio.keypoints.append(Marker(fPos, "switch", rank = 1))
+			self.sungio.keypoints.append(Marker(fPos, "switch", rank = 1))
 			self.__workspace.newMarker()
 		if self.__workspace.action == "move":		
 			for mark in self.keypoints:
