@@ -95,14 +95,14 @@ class Marker:
 		
 class Window:
 	def __init__(self, workspace, sungio, order=0, start = 0, end=1): 
-		self.__movePoint = "empty"
+		self.movePoint = "empty"
 		self.sungio = sungio
-		self.__workspace = workspace
+		self.workspace = workspace
 		self.keypoints = []
 		self.start = start
 		self.end = end
 		self.order = order
-		self.frame = tk.Frame(self.__workspace.audioWindowsFrame, bg = "#B3CBC0", height = 213, width = 1900);
+		self.frame = tk.Frame(self.workspace.audioWindowsFrame, bg = "#B3CBC0", height = 213, width = 1900);
 		self.frame.grid(column=0, row = order)
 		self.visual = Visual(self.frame)
 		self.visual.canvas.bind('<Button-1>', self.pressMouseLeft)
@@ -127,22 +127,22 @@ class Window:
 
 	def pressMouseLeft(self, event):
 		fPos = self.start + (event.x/config.audioCanvasWidth) * (self.end - self.start) # Floating point poisition
-		if self.__workspace.action == "place":		
+		if self.workspace.action == "place":		
 			self.sungio.keypoints.append(Marker(fPos, "switch", rank = 1))
-			self.__workspace.newMarker()
-		if self.__workspace.action == "move":		
+			self.workspace.newMarker()
+		if self.workspace.action == "move":		
 			for mark in self.keypoints:
 				if self.doesHandleContainMousePos(event.x, event.y, mark.pos):
 					print("Point ", mark.pos, "Clicked")
-					self.__movePoint = mark
+					self.movePoint = mark
 			
 	def releaseMouseLeft(self, event):
 		fPos = self.start + (event.x/config.audioCanvasWidth) * (self.end - self.start) # Floating point poisition
-		print(self.__movePoint)
-		if self.__workspace.action == "move" and  self.__movePoint != "empty":
-			self.__movePoint.pos = fPos
-			self.__movePoint = "empty"
-			self.__workspace.render()
+		print(self.movePoint)
+		if self.workspace.action == "move" and  self.movePoint != "empty":
+			self.movePoint.pos = fPos
+			self.movePoint = "empty"
+			self.workspace.render()
 		
 class Visual:
 	def __init__(self, frame):
