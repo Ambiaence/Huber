@@ -64,8 +64,13 @@ class AudioWorkspace:
 			self.highestWindowIndex = self.highestWindowIndex - 1;
 
 	def render(self): #Draw everything
-		for window in self.windows:
+		for window in self.windows: #Draw background
 			window.visual.canvas.create_rectangle(0, 0, config.audioCanvasWidth, config.audioCanvasHeight, fill = config.audioCanvasColor)	
+
+		for window in self.windows:
+			amplitudes = self.sungio.getAverageAmplitudes(window.start, window.end, config.audioCanvasWidth)
+			for pos in range(config.audioCanvasWidth - 1):
+				window.visual.drawAmplitude(pos, amplitudes[pos], "black")
 
 		for mark in self.sungio.keypoints: 
 			for window in self.windows:
@@ -162,6 +167,9 @@ class Visual:
 		self.canvas = tk.Canvas(frame, height = config.audioCanvasHeight, bg = "#DDD8B8", width = config.audioCanvasWidth)
 		self.canvas.grid(row = 0, column = 1)
 		self.buttonFrame.grid(row = 0, column = 0)
+	
+	def drawAmplitude(self, pos, amp, color):
+		self.canvas.create_line(pos, 0, pos, config.audioCanvasHeight*amp, fill = color)
 	
 	def drawMark(self, pos, color):
 		self.canvas.create_line(pos, 0, pos, config.audioCanvasHeight, fill = color)
