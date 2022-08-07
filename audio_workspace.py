@@ -7,6 +7,7 @@ class AudioWorkspace:
 		self.sungio = sungio
 		self.audioWindowsFrame = tk.Frame(self.root, bg= config.colorOne, height = 855, width = 1920)
 		self.audioWindowsFrame.grid(column=0, row=1, sticky = 'e')
+
 		self.globalButtonsFrame = tk.Frame(self.root, bg= "#B3CBC9", height = 75, width = 1920)
 		self.globalButtonsFrame.grid(column=0, row=2, sticky = 'e')
 		self.pack
@@ -14,6 +15,7 @@ class AudioWorkspace:
 		self.windows = []
 		self.markers = []
 		self.highestWindowIndex = 0;
+
 		self.windows.append(Window(sungio = self.sungio, workspace = self))
 		self.new = tk.Button(self.globalButtonsFrame, text = "Add", command = lambda: self.addWindow())
 		self.new.pack()
@@ -111,11 +113,15 @@ class Window:
 		self.start = start
 		self.end = end
 		self.order = order
+
 		self.frame = tk.Frame(self.workspace.audioWindowsFrame, bg = "#B3CBC0", height = 213, width = 1900);
 		self.frame.grid(column=0, row = order)
+
 		self.visual = Visual(self.frame)
+
 		self.visual.canvas.bind('<Button-1>', self.pressMouseLeft)
 		self.visual.canvas.bind('<ButtonRelease-1>', self.releaseMouseLeft)
+
 		self.containedMarks = []
 		self.openMarker = Marker(start + (end - start)*.01, "open", "NA")
 		self.closeMarker = Marker(end - (end - start)*.01, "close", "NA")
@@ -167,6 +173,9 @@ class Visual:
 		self.canvas = tk.Canvas(frame, height = config.audioCanvasHeight, bg = "#DDD8B8", width = config.audioCanvasWidth)
 		self.canvas.grid(row = 0, column = 1)
 		self.buttonFrame.grid(row = 0, column = 0)
+
+		self.play = tk.Button(self.buttonFrame, text = "play", command = lambda: self.addWindow())
+		self.play.pack() 
 	
 	def drawAmplitude(self, pos, amp, color):
 		self.canvas.create_line(pos, 0, pos, config.audioCanvasHeight*amp, fill = color)
