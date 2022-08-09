@@ -9,6 +9,7 @@ class Sungio:
 		self.filePath=file
 		self.waveFile = open(self.filePath, 'rb')  
 		self.waveObj = wave.open(self.waveFile, 'rb')
+		print(self.waveObj.getcomptype())
 		self.getAverageAmplitudes(0, 1, 100)
 
 	#Returns a list of the average value of bytes as a slice of the wave file
@@ -23,7 +24,7 @@ class Sungio:
 		print(self.waveObj.getsampwidth())
 		for i in range(resolution):
 			bytes = self.waveObj.readframes(snipitSize)
-			list.append((sum(bytes)/snipitSize)/1000)
+			list.append((sum(bytes)/snipitSize)/(2**8))
 
 		return list
 

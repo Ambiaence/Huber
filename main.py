@@ -22,7 +22,7 @@ def openFile():
 	except:
 		print("There was no leftover garbage from the last excecution")
 
-	ff = ffmpy.FFmpeg(inputs={filename: None}, outputs={'sungioTemp.wav': None})
+	ff = ffmpy.FFmpeg(inputs={filename: None}, outputs={'sungioTemp.wav': '-acodec pcm_u8 -ac 1'})
 	ff.run();
 	#Quck test
 	startMenuFrame.pack_forget()
