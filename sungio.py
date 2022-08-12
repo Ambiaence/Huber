@@ -3,6 +3,7 @@ import pyaudio
 import time
 import simpleaudio
 import pydub
+import threading
 
 from io import BytesIO
 
@@ -23,9 +24,6 @@ class Sungio:
 			rate = self.waveObj.getframerate(),
 			output = True
 			)
-
-		self.playFromHereToThere(0,0)
-
 	#Returns a list of the average value of bytes as a slice of the wave file
 	def getAverageAmplitudes(self, start, end, resolution): 
 		list = []
@@ -42,11 +40,14 @@ class Sungio:
 		return list
 	
 	def playFromHereToThere(self, start, end):
-		self.play()
-			
-	def play(self):
+		self.thread =  threading.Thread(target = self.play, args=(start, end))
+		self.thread.start()
+
+	def play(self,start,end):
+		self.waveObj.setpos(int(start * self.waveObj.getnframes()))
+		nChunks = int((self.waveObj.getnframes()*(end-start))/self.chunk)
 		data = self.waveObj.readframes(self.chunk)
-		while data != b'':
+		for n in range(nChunks):
 			self.stream.write(data)
 			data = self.waveObj.readframes(self.chunk)
 			

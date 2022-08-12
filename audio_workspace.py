@@ -114,8 +114,14 @@ class Window:
 		self.end = end
 		self.order = order
 
+
 		self.frame = tk.Frame(self.workspace.audioWindowsFrame, bg = "#B3CBC0", height = 213, width = 1900);
 		self.frame.grid(column=0, row = order)
+
+		self.buttonFrame = tk.Frame(self.frame, height =213, bg = "#B3CBC9", width = 213)
+		self.buttonFrame.grid(row = 0, column = 0)
+		self.play = tk.Button(self.buttonFrame, text = "play", command = lambda: self.playSong())
+		self.play.pack()
 
 		self.visual = Visual(self.frame)
 
@@ -125,6 +131,9 @@ class Window:
 		self.containedMarks = []
 		self.openMarker = Marker(start + (end - start)*.01, "open", "NA")
 		self.closeMarker = Marker(end - (end - start)*.01, "close", "NA")
+
+	def playSong(self):
+		self.sungio.playFromHereToThere(self.openMarker.pos, self.closeMarker.pos)
 	
 	def doesHandleContainMousePos(self, x, y, pos):
 		north = config.audioCanvasHeight - 21; # This is the box that is a keypoint
@@ -168,14 +177,10 @@ class Window:
 		
 class Visual:
 	def __init__(self, frame):
-		self.buttonFrame = tk.Frame(frame, height =213, bg = "#B3CBC9", width = 213)
 		self.frame = tk.Frame(frame, height =213, bg = "#B3CBC9", width = 213)
 		self.canvas = tk.Canvas(frame, height = config.audioCanvasHeight, bg = "#DDD8B8", width = config.audioCanvasWidth)
 		self.canvas.grid(row = 0, column = 1)
-		self.buttonFrame.grid(row = 0, column = 0)
-
-		self.play = tk.Button(self.buttonFrame, text = "play", command = lambda: self.addWindow())
-		self.play.pack() 
+		 
 	
 	def drawAmplitude(self, pos, amp, color):
 		self.canvas.create_line(pos, 0, pos, config.audioCanvasHeight*amp, fill = color)
