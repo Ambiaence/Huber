@@ -1,4 +1,5 @@
 import wave
+import math
 import pyaudio
 import time
 import simpleaudio
@@ -46,9 +47,24 @@ class Sungio:
 	def play(self,start,end):
 		self.waveObj.setpos(int(start * self.waveObj.getnframes()))
 		nChunks = int((self.waveObj.getnframes()*(end-start))/self.chunk)
+		chunksToPlay = []
+
+		for mark in self.keypoints:
+			if mark.pos > start and mark.pos < end: #Is the pos relavant to this frame? 
+				chunksToPlay.append(int((mark.pos - start)/(end-start) * nChunks)) #find the chunk the point occupies
+
 		data = self.waveObj.readframes(self.chunk)
+		print(chunksToPlay)
+			
 		for n in range(nChunks):
-			self.stream.write(data)
+			modData = []
+			if n in chunksToPlay:
+				for x in range(len(data)):
+					modData.append(int((data[x] + math.sin(x/2)*20)/2))
+				self.stream.write(bytes(iter(modData)))
+			else:
+				self.stream.write(data)
+
 			data = self.waveObj.readframes(self.chunk)
 			
 	def close(self):
