@@ -60,8 +60,7 @@ class Sungio:
 			modData = []
 			if n in chunksToPlay:
 				for x in range(len(data)):
-					modData.append(int((data[x] + math.sin(x/2)*20)/2))
-				self.stream.write(bytes(iter(modData)))
+					modData.append(int((data[x] + (math.sin(x/2) + 1)*20)/2))
 			else:
 				self.stream.write(data)
 
