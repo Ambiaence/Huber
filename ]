@@ -1,8 +1,0 @@
-class Summation:
-	def __init__(self):	
-		self.avg
-		self.n = 0
-		
-	def add(self,  z):
-		self.avg = self.avg   		
-		
