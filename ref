@@ -1,6 +1,0 @@
-Usefull python functions
-	Wave_read.close()
-	Wave_readgetsampwidth()	 //In bytes
-	getframerate() // frequency
-	:wq
-
