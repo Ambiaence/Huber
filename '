@@ -16,26 +16,22 @@ from audio_workspace import AudioWorkspace
 from navigation_frame import NavigationFrame
 
 def openFile():
-    filename = askopenfilename()
-    print("You have selected : %s" % filename)
-    try:
-        os.remove("sungioTemp.wav") 	
-    except:
-        print("There was no leftover garbage from the last excecution")
-    opsys = platform.system()
-    print(opsys)
+	filename = askopenfilename()
+	print("You have selected : %s" % filename)
+	try:
+		os.remove("sungioTemp.wav")
+	except:
+		print("There was no leftover garbage from the last excecution")
+    opsys = platform.platform()
     if opsys == "Windows":
-        print("Using Windows")
         ff = ffmpy.FFmpeg(executable = "ffmpeg/ffmpeg.exe", inputs={filename: None}, outputs={'sungioTemp.wav': '-acodec pcm_u8 -ac 1'})
-        input()
-    elif opsys == "Linux":
-        print("Using Linux")
+    else if opsys == "Linux":
         ff = ffmpy.FFmpeg(inputs={filename: None}, outputs={'sungioTemp.wav': '-acodec pcm_u8 -ac 1'})
 
-    #Quck test
-    startMenuFrame.pack_forget()
-    config.sungio = Sungio('sungioTemp.wav')
-    audioPhase()
+	#Quck test
+	startMenuFrame.pack_forget()
+	config.sungio = Sungio('sungioTemp.wav')
+	audioPhase()
 
 def audioPhase(): #All frames are in column  except back and next buttons
 	navigationFrame = NavigationFrame(config.root)
